@@ -10,12 +10,9 @@ const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 const NotFoundError = require('./errors/NotFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-// const cors = require('./middlewares/cors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
-
-// app.use(cors);
 
 const corsAllowed = [
   'https://praktikum.tk',

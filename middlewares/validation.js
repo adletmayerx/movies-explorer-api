@@ -1,5 +1,5 @@
-const { celebrate, CelebrateError, Joi } = require("celebrate");
-const { isURL, isEmail } = require("validator");
+const { celebrate, CelebrateError, Joi } = require('celebrate');
+const { isURL, isEmail } = require('validator');
 
 module.exports.userInfoValidation = celebrate({
   body: Joi.object().keys({
@@ -8,7 +8,7 @@ module.exports.userInfoValidation = celebrate({
       .required()
       .custom((value) => {
         if (!isEmail(value)) {
-          throw new CelebrateError("Введен некоректный email");
+          throw new CelebrateError('Введен некоректный email');
         }
         return value;
       }),
@@ -21,7 +21,7 @@ module.exports.loginValidation = celebrate({
       .required()
       .custom((value) => {
         if (!isEmail(value)) {
-          throw new CelebrateError("Введен некоректный email");
+          throw new CelebrateError('Введен некоректный email');
         }
         return value;
       }),
@@ -35,7 +35,7 @@ module.exports.userValidation = celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().custom((value) => {
       if (!isURL(value)) {
-        throw new CelebrateError("Введен некоректный url");
+        throw new CelebrateError('Введен некоректный url');
       }
       return value;
     }),
@@ -43,7 +43,7 @@ module.exports.userValidation = celebrate({
       .required()
       .custom((value) => {
         if (!isEmail(value)) {
-          throw new CelebrateError("Введен некоректный email");
+          throw new CelebrateError('Введен некоректный email');
         }
         return value;
       }),
@@ -68,7 +68,7 @@ module.exports.movieValidation = celebrate({
       .required()
       .custom((value) => {
         if (!isURL(value)) {
-          throw new CelebrateError("Введен некоректный url");
+          throw new CelebrateError('Введен некоректный url');
         }
         return value;
       }),
@@ -76,7 +76,7 @@ module.exports.movieValidation = celebrate({
       .required()
       .custom((value) => {
         if (!isURL(value)) {
-          throw new CelebrateError("Введен некоректный url");
+          throw new CelebrateError('Введен некоректный url');
         }
         return value;
       }),
@@ -86,7 +86,7 @@ module.exports.movieValidation = celebrate({
       .required()
       .custom((value) => {
         if (!isURL(value)) {
-          throw new CelebrateError("Введен некоректный url");
+          throw new CelebrateError('Введен некоректный url');
         }
         return value;
       }),
