@@ -1,0 +1,43 @@
+{
+  "name": "movies-explorer-api",
+  "version": "1.0.0",
+  "description": "diploma project",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint .",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asadrtdinov/movies-explorer-api.git"
+  },
+  "author": "Artour Sadrtdinov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asadrtdinov/movies-explorer-api/issues"
+  },
+  "homepage": "https://github.com/asadrtdinov/movies-explorer-api#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "celebrate": "^15.0.0",
+    "cookie": "^0.4.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-winston": "^4.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.1",
+    "validator": "^13.7.0",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.4.1",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "nodemon": "^2.0.15"
+  }
+}

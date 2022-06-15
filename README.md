@@ -1,24 +1,12 @@
-# infteh-test-task
+# Проект Mesto фронтенд + бэкенд
 
-## Project setup
-```
-npm install
-```
+## Директории
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+`/routes` — папка с файлами роутера  
+`/controllers` — папка с файлами контроллеров пользователя и карточки   
+`/models` — папка с файлами описания схем пользователя и карточки  
+  
+## Запуск проекта
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+`npm run start` — запускает сервер   
+`npm run dev` — запускает сервер с hot-reload
