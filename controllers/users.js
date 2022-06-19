@@ -21,7 +21,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new ConflictError(`Пользователь с таким email уже существует ${req.user._id} and ${user._id}`);
+        throw new ConflictError(`Пользователь с таким email уже существует ${req.user._id === user._id}`);
       }
     }).catch(next);
 
