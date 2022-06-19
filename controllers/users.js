@@ -20,58 +20,63 @@ module.exports.updateUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user && user._id.toString() === req.user._id) {
-        throw new ConflictError('Пользователь с таким email уже существует');
+        next(ConflictError('Пользователь с таким email уже существует'));
       }
-    }).catch(next);
-
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, email },
-    {
-      new: true,
-      runValidators: true,
-    },
-  )
-    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
-    .then((_user) => {
-      res.send(_user);
-    })
-    .catch((e) => {
-      if (e.name === 'CastError') {
-        next(new ValidationError(e.message));
-      } else {
-        next(e);
-      }
+      User.findByIdAndUpdate(
+        req.user._id,
+        { name, email },
+        {
+          new: true,
+          runValidators: true,
+        },
+      )
+        .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+        .then((_user) => {
+          res.send(_user);
+        })
+        .catch((e) => {
+          if (e.name === 'CastError') {
+            next(new ValidationError(e.message));
+          } else {
+            next(e);
+          }
+        })
+        .catch(next);
     })
     .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    User.create({
-      name,
-      email,
-      password: hash,
-    })
-      .then(() => {
-        res.status(200).send({
-          data: {
-            name,
-            email,
-          },
-        });
-      }).catch((e) => {
-        if (e.name === 'CastError') {
-          next(new ValidationError(e.message));
-        }
-        if (e.code === 11000) {
-          throw new ConflictError('Пользователь с таким email уже существует');
-        }
-        return next(e);
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => {
+      User.create({
+        name,
+        email,
+        password: hash,
       })
-      .catch(next);
-  })
+        .then(() => {
+          res.status(200).send({
+            data: {
+              name,
+              email,
+            },
+          });
+        })
+        .catch((e) => {
+          if (e.name === 'CastError') {
+            throw new ValidationError(e.message);
+          }
+          if (e.code === 11000) {
+            throw new ConflictError(
+              'Пользователь с таким email уже существует',
+            );
+          }
+          return next(e);
+        })
+        .catch(next);
+    })
     .catch(next);
 };
 
