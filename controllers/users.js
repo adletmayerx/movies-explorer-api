@@ -48,12 +48,6 @@ module.exports.updateUser = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
-  // User.findOne({ email })
-  //   .then((user) => {
-  //     if (user) {
-  //       throw new ConflictError('Пользователь с таким email уже существует');
-  //     } else {
-  //       return
   bcrypt.hash(password, 10).then((hash) => {
     User.create({
       name,
