@@ -5,32 +5,28 @@ const movieSchema = new mongoose.Schema({
   country: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
   director: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
   duration: {
     type: Number,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
   year: {
     type: String,
+    validate: {
+      validator(v) {
+        return /\d{4}/gi.test(v);
+      },
+      message: 'Неправильный формат поля год',
+    },
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
   description: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
   image: {
     type: String,
@@ -68,20 +64,17 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
   movieId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Number,
+    unique: true,
     required: true,
   },
   nameRU: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
   nameEN: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
 });
 

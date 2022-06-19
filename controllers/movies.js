@@ -17,8 +17,7 @@ module.exports.deleteMovie = (req, res, next) => {
       }
       return movie
         .remove()
-        .then(() => res.send({ message: 'Фильм удален' }))
-        .catch(next);
+        .then(() => res.send({ message: 'Фильм удален' }));
     })
     .catch(next);
 };
@@ -32,7 +31,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,
@@ -46,7 +45,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,

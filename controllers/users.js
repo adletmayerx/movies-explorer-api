@@ -6,22 +6,6 @@ const ConflictError = require('../errors/ConflictError');
 const NotAuthError = require('../errors/NotAuthError');
 const ValidationError = require('../errors/ValidationError');
 
-// module.exports.getUser = (req, res, next) => {
-//   User.findById(req.params.id)
-//     .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
-//     .then((user) => {
-//       res.send(user);
-//     })
-//     .catch((e) => {
-//       if (e.name === 'CastError') {
-//         next(new ValidationError(e.message));
-//       } else {
-//         next(e);
-//       }
-//     })
-//     .catch(next);
-// };
-
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -32,54 +16,68 @@ module.exports.getUserInfo = (req, res, next) => {
 
 module.exports.updateUser = (req, res, next) => {
   const { name, email } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, email },
-    {
-      new: true,
-      runValidators: true,
-    },
-  )
-    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
-    .then((user) => {
-      res.send(user);
-    })
-    .catch((e) => {
-      if (e.name === 'CastError') {
-        next(new ValidationError(e.message));
-      } else {
-        next(e);
-      }
-    })
-    .catch(next);
-};
 
-module.exports.createUser = (req, res, next) => {
-  const { name, email, password } = req.body;
   User.findOne({ email })
     .then((user) => {
       if (user) {
         throw new ConflictError('Пользователь с таким email уже существует');
       } else {
-        return bcrypt.hash(password, 10);
+        User.findByIdAndUpdate(
+          req.user._id,
+          { name, email },
+          {
+            new: true,
+            runValidators: true,
+          },
+        )
+          .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+          .then((_user) => {
+            res.send(_user);
+          })
+          .catch((e) => {
+            if (e.name === 'CastError') {
+              next(new ValidationError(e.message));
+            } else {
+              next(e);
+            }
+          })
+          .catch(next);
       }
+    });
+};
+
+module.exports.createUser = (req, res, next) => {
+  const { name, email, password } = req.body;
+  // User.findOne({ email })
+  //   .then((user) => {
+  //     if (user) {
+  //       throw new ConflictError('Пользователь с таким email уже существует');
+  //     } else {
+  //       return
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({
+      name,
+      email,
+      password: hash,
     })
-    .then((hash) => {
-      User.create({
-        name,
-        email,
-        password: hash,
+      .then(() => {
+        res.status(200).send({
+          data: {
+            name,
+            email,
+          },
+        });
+      }).catch((e) => {
+        if (e.name === 'CastError') {
+          next(new ValidationError(e.message));
+        }
+        if (e.code === 11000) {
+          throw new ConflictError('Пользователь с таким email уже существует');
+        }
+        return next(e);
       })
-        .then(() => {
-          res.status(200).send({
-            data: {
-              name,
-              email,
-            },
-          });
-        })
-        .catch(next);
-    })
+      .catch(next);
+  })
     .catch(next);
 };
 

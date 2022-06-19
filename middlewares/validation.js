@@ -31,14 +31,7 @@ module.exports.loginValidation = celebrate({
 
 module.exports.userValidation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().custom((value) => {
-      if (!isURL(value)) {
-        throw new CelebrateError('Введен некоректный url');
-      }
-      return value;
-    }),
+    name: Joi.string().min(2).max(30).required(),
     email: Joi.string()
       .required()
       .custom((value) => {
@@ -59,11 +52,11 @@ module.exports.movieIdValidation = celebrate({
 
 module.exports.movieValidation = celebrate({
   body: Joi.object().keys({
-    country: Joi.string().min(2).max(30).required(),
-    director: Joi.string().min(2).max(30).required(),
-    duration: Joi.number().min(2).max(30).required(),
-    year: Joi.string().min(2).max(30).required(),
-    description: Joi.string().min(2).max(30).required(),
+    country: Joi.string().required(),
+    director: Joi.string().required(),
+    duration: Joi.number().required(),
+    year: Joi.string().required(),
+    description: Joi.string().required(),
     image: Joi.string()
       .required()
       .custom((value) => {
@@ -72,7 +65,7 @@ module.exports.movieValidation = celebrate({
         }
         return value;
       }),
-    trailer: Joi.string()
+    trailerLink: Joi.string()
       .required()
       .custom((value) => {
         if (!isURL(value)) {
@@ -80,8 +73,8 @@ module.exports.movieValidation = celebrate({
         }
         return value;
       }),
-    nameRU: Joi.string().min(2).max(30).required(),
-    nameEN: Joi.string().min(2).max(30).required(),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
     thumbnail: Joi.string()
       .required()
       .custom((value) => {
@@ -90,6 +83,6 @@ module.exports.movieValidation = celebrate({
         }
         return value;
       }),
-    movieId: Joi.string().required().hex().length(24),
+    movieId: Joi.number().integer().positive().required(),
   }),
 });

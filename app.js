@@ -2,26 +2,24 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const { errors } = require('celebrate');
 const cors = require('cors');
-const { createUser, login, signOut } = require('./controllers/users');
-const { userValidation, loginValidation } = require('./middlewares/validation');
-const auth = require('./middlewares/auth');
+const routes = require('./routes');
 const errorHandler = require('./middlewares/errorHandler');
-const NotFoundError = require('./errors/NotFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { CORS_ALLOWED } = require('./utils/constants');
+const { MONGO_DB, PORT } = require('./config');
 
-const { PORT = 3000 } = process.env;
 const app = express();
 
-const corsAllowed = [
-  'https://praktikum.tk',
-  'http://praktikum.tk',
-  'http://localhost:3000',
-  'https://localhost:3000',
-  'http://asadrtdinov.nomoredomains.rocks',
-  'https://asadrtdinov.nomoredomains.rocks',
-];
+app.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
 
 require('dotenv').config();
 
@@ -29,7 +27,7 @@ app.use(
   cors({
     credentials: true,
     origin(origin, callback) {
-      if (corsAllowed.includes(origin) || !origin) {
+      if (CORS_ALLOWED.includes(origin) || !origin) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
@@ -52,26 +50,15 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post('/signin', loginValidation, login);
-app.post('/signup', userValidation, createUser);
-app.delete('/signout', signOut);
-
-app.use(auth);
-
-app.use('/users', require('./routes/users'));
-app.use('/movies', require('./routes/movies'));
-
-app.use('*', () => {
-  throw new NotFoundError('Запрашиваемый ресурс не найден');
-});
+app.use(limiter);
+app.use(routes);
 
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
-mongoose.connect('mongodb://localhost:27017/moviesdb', {});
+mongoose.connect(MONGO_DB, {});
 
 app.listen(PORT, () => {
   console.log('Ссылка на сервер');
   console.log(PORT);
-  console.log(process.env.JWT_SECRET);
 });
