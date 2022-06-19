@@ -22,28 +22,28 @@ module.exports.updateUser = (req, res, next) => {
       if (user && user._id.toString() === req.user._id) {
         throw new ConflictError('Пользователь с таким email уже существует');
       }
+    }).catch(next);
 
-      User.findByIdAndUpdate(
-        req.user._id,
-        { name, email },
-        {
-          new: true,
-          runValidators: true,
-        },
-      )
-        .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
-        .then((_user) => {
-          res.send(_user);
-        })
-        .catch((e) => {
-          if (e.name === 'CastError') {
-            next(new ValidationError(e.message));
-          } else {
-            next(e);
-          }
-        })
-        .catch(next);
-    });
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, email },
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
+    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+    .then((_user) => {
+      res.send(_user);
+    })
+    .catch((e) => {
+      if (e.name === 'CastError') {
+        next(new ValidationError(e.message));
+      } else {
+        next(e);
+      }
+    })
+    .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
