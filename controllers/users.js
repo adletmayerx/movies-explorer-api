@@ -21,29 +21,29 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => {
       if (user && req.user._id !== user._id.toString()) {
         throw new ConflictError(`Пользователь с таким email уже существует ${req.user._id === user._id.toString()}`);
+      } else {
+        User.findByIdAndUpdate(
+          req.user._id,
+          { name, email },
+          {
+            new: true,
+            runValidators: true,
+          },
+        )
+          .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+          .then((_user) => {
+            res.send(_user);
+          })
+          .catch((e) => {
+            if (e.name === 'CastError') {
+              next(new ValidationError(e.message));
+            } else {
+              next(e);
+            }
+          })
+          .catch(next);
       }
     }).catch(next);
-
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, email },
-    {
-      new: true,
-      runValidators: true,
-    },
-  )
-    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
-    .then((_user) => {
-      res.send(_user);
-    })
-    .catch((e) => {
-      if (e.name === 'CastError') {
-        next(new ValidationError(e.message));
-      } else {
-        next(e);
-      }
-    })
-    .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
