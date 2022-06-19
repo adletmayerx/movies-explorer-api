@@ -1,7 +1,7 @@
 const jsonwebtoken = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/users');
-// const NotFoundError = require('../errors/NotFoundError');
+const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const NotAuthError = require('../errors/NotAuthError');
 const ValidationError = require('../errors/ValidationError');
@@ -16,35 +16,34 @@ module.exports.getUserInfo = (req, res, next) => {
 
 module.exports.updateUser = (req, res, next) => {
   const { name, email } = req.body;
-  console.log(name);
 
   User.findOne({ email })
     .then((user) => {
-      if (user) {
+      if (user && req.user._id !== user._id.toString()) {
         throw new ConflictError(`Пользователь с таким email уже существует ${req.user._id === user._id.toString()}`);
       }
     }).catch(next);
 
-  // User.findByIdAndUpdate(
-  //   req.user._id,
-  //   { name, email },
-  //   {
-  //     new: true,
-  //     runValidators: true,
-  //   },
-  // )
-  //   .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
-  //   .then((_user) => {
-  //     res.send(_user);
-  //   })
-  //   .catch((e) => {
-  //     if (e.name === 'CastError') {
-  //       next(new ValidationError(e.message));
-  //     } else {
-  //       next(e);
-  //     }
-  //   })
-  //   .catch(next);
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, email },
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
+    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+    .then((_user) => {
+      res.send(_user);
+    })
+    .catch((e) => {
+      if (e.name === 'CastError') {
+        next(new ValidationError(e.message));
+      } else {
+        next(e);
+      }
+    })
+    .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
