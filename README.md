@@ -1,24 +1,26 @@
-# infteh-test-task
+# Дипломный проект (серверная часть)
+## Описание
+Дипломный проект, выполненный при обучении на Яндекс.Практикуме по специальности Веб-разработчик.
 
-## Project setup
-```
+## Адрес сервера
+api.movies-sadrtdinov.nomoredomains.xyz
+
+## Технологии
+Проект реализован на Node с применением Express.
+
+Для работы с базами данных используется MongoDB.
+
+## Запуск проекта
+### Клонировать репозиторий
+
+git clone https://github.com/asadrtdinov/movies-explorer-api.git
+
+### Установить зависимости
+
 npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### Для запуска использовать команды
 
-### Compiles and minifies for production
-```
-npm run build
-```
+npm run start — запускает сервер
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+npm run dev — запускает сервер с hot-reload
