@@ -8,8 +8,8 @@ const CORS_ALLOWED = [
   'http://praktikum.tk',
   'http://localhost:3000',
   'https://localhost:3000',
-  'http://asadrtdinov.nomoredomains.rocks',
-  'https://asadrtdinov.nomoredomains.rocks',
+  'http://movies-sadrtdinov.nomoredomains.xyz',
+  'https://movies-sadrtdinov.nomoredomains.xyz',
 ];
 
 module.exports = {
