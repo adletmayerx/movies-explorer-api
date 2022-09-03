@@ -43,35 +43,41 @@ module.exports.updateUser = (req, res, next) => {
           })
           .catch(next);
       }
-    }).catch(next);
+    })
+    .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    User.create({
-      name,
-      email,
-      password: hash,
-    })
-      .then(() => {
-        res.status(200).send({
-          data: {
-            name,
-            email,
-          },
-        });
-      }).catch((e) => {
-        if (e.name === 'CastError') {
-          throw new ValidationError(e.message);
-        }
-        if (e.code === 11000) {
-          throw new ConflictError('Пользователь с таким email уже существует');
-        }
-        return next(e);
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => {
+      User.create({
+        name,
+        email,
+        password: hash,
       })
-      .catch(next);
-  })
+        .then(() => {
+          res.status(200).send({
+            data: {
+              name,
+              email,
+            },
+          });
+        })
+        .catch((e) => {
+          if (e.name === 'CastError') {
+            throw new ValidationError(e.message);
+          }
+          if (e.code === 11000) {
+            throw new ConflictError(
+              'Пользователь с таким email уже существует',
+            );
+          }
+          return next(e);
+        })
+        .catch(next);
+    })
     .catch(next);
 };
 
@@ -118,5 +124,10 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.signOut = (req, res) => {
-  res.cookie('jwt', { maxAge: 0 }).send({ message: 'cookies deleted' });
+  res
+    .clearCookie('jwt', {
+      domain: 'api.movies-sadrtdinov.nomoredomains.xyz',
+      path: '/',
+    })
+    .send({ message: 'cookies deleted' });
 };
