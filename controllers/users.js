@@ -118,5 +118,5 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.signOut = (req, res) => {
-  res.clearCookie('jwt').send({ message: 'cookies deleted' });
+  res.cookie('jwt', { maxAge: 0 }).send({ message: 'cookies deleted' });
 };
